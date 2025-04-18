@@ -4,7 +4,7 @@
     box-sizing: border-box;
 }
 
-body{
+body {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -14,7 +14,7 @@ body{
     background-position: center;
 }
 
-.wrapper{
+.wrapper {
     width: 420px;
     background: transparent;
     border: 2px solid rgba(255, 255, 255, .2);
@@ -24,50 +24,61 @@ body{
     padding: 30px 40px;
 }
 
-.wrapper h1{
+.wrapper h1 {
     font-size: 36px;
     text-align: center;
 }
 
-.wrapper .input-box{
+.wrapper .input-box {
     position: relative;
     width: 100%;
-    height: 50px;
-    margin: 30px 0;
+    margin: 20px 0;
 }
 
-.input-box input{
+.input-box input,
+.input-box select {
     width: 100%;
-    height: 100%;
+    height: 40px;
     background: transparent;
     border: none;
     outline: none;
     border: 2px solid rgba(31, 28, 28, 0.2);
-    border-radius: 40px;
-    font-size: 16px;
+    border-radius: 30px;
+    font-size: 14px;
     color: black;
-    padding: 20px 45px 20px 20px;
+    padding: 10px 40px 10px 15px;
 }
 
-.input-box input::placeholder{
+.input-box input::placeholder,
+.input-box select {
     color: black;
 }
 
-.input-box i{
+.input-box i {
     position: absolute;
-    right: 20px;
+    right: 15px;
     top: 50%;
     transform: translateY(-50%);
-    font-size: 20px;
+    font-size: 18px;
 }
 
-.wrapper .btn{
+.input-box select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%22292.4%22%20height%3D%22292.4%22%20viewBox%3D%220%200%20292.4%20292.4%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20fill%3D%22%23333%22%20d%3D%22M287%2069.4c-3.6-3.6-9.4-3.6-13%200L146.2%20197.2%2018.4%2069.4c-3.6-3.6-9.4-3.6-13%200s-3.6%209.4%200%2013l135%20135c1.8%201.8%204.2%202.7%206.5%202.7s4.7-0.9%206.5-2.7l135-135c3.6-3.6%203.6-9.4%200-13z%22/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 12px;
+}
+
+.wrapper .btn {
     width: 100%;
-    height: 45px;
+    height: 40px;
     background: black;
     border: none;
     outline: none;
-    border-radius: 40px;
+    border-radius: 30px;
     box-shadow: 0 0 10px rgba(0, 0, 0, .1);
     cursor: pointer;
     font-size: 16px;
@@ -75,18 +86,35 @@ body{
     font-weight: 600;
 }
 
-.wrapper .register-link{
-    font-size: 14.5px;
+.wrapper .register-link {
+    font-size: 14px;
     text-align: center;
     margin: 20px 0 15px;
 }
 
-.register-link p a{
+.register-link p a {
     color: blue;
     text-decoration: none;
     font-weight: 600;
 }
 
-.register-link p a:hover{
+.register-link p a:hover {
     text-decoration: underline;
+}
+
+/* Password Strength Meter */
+.strength-meter {
+    width: 100%;
+    height: 8px;
+    background: #ccc;
+    border-radius: 5px;
+    margin-top: -15px;
+    margin-bottom: 10px;
+}
+
+#strength {
+    height: 100%;
+    width: 0%;
+    border-radius: 5px;
+    transition: width 0.3s ease-in-out;
 }

@@ -1,45 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../CSS/signup.css">
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../CSS/signup.css" />
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <title>Signup</title>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  <script>
+    function checkPasswordStrength(password) {
+      const strengthMeter = document.getElementById("strength");
+      const strengthText = document.getElementById("strength-text");
+
+      let strength = 0;
+      if (password.length >= 8) strength++;
+      if (/[A-Z]/.test(password)) strength++;
+      if (/[0-9]/.test(password)) strength++;
+      if (/[^A-Za-z0-9]/.test(password)) strength++;
+
+      switch (strength) {
+        case 0:
+        case 1:
+          strengthMeter.style.width = "25%";
+          strengthMeter.style.background = "red";
+          strengthText.textContent = "Weak";
+          break;
+        case 2:
+          strengthMeter.style.width = "50%";
+          strengthMeter.style.background = "orange";
+          strengthText.textContent = "Moderate";
+          break;
+        case 3:
+          strengthMeter.style.width = "75%";
+          strengthMeter.style.background = "blue";
+          strengthText.textContent = "Strong";
+          break;
+        case 4:
+          strengthMeter.style.width = "100%";
+          strengthMeter.style.background = "green";
+          strengthText.textContent = "Very Strong";
+          break;
+      }
+    }
+  </script>
 </head>
 <body>
-    <div class="wrapper">
-        <form action="">
-            <h1>Signup</h1>
-            <div class="input-box">
-                <input type="text" placeholder="First Name" required>
-                <i class='bx bxs-user'></i>
-            </div>
-            <div class="input-box">
-                <input type="text" placeholder="Last Name" required>
-                <i class='bx bxs-user'></i>
-            </div>
-            <div class="input-box">
-                <input type="text" placeholder="Email" required>
-                <i class='bx bxs-envelope'></i>
-            </div>
-            <div class="input-box">
-                <input type="text" placeholder="Phone Number" required>
-                <i class='bx bxs-phone'></i>
-            </div>
-            <div class="input-box">
-                <input type="text" placeholder="Username" required>
-                <i class='bx bxs-user'></i>
-            </div>
-            <div class="input-box">
-                <input type="password" placeholder="Password" required>
-                <i class='bx bxs-lock-alt'></i>
-            </div>
-            <button type="submit" class="btn">Signup</button>
-            <div class="register-link">
-                <p>Have an account? <a href="login.html">Login Now</a></p>
-            </div>
-        </form>
-    </div>
+  <div class="wrapper">
+    <form action="" method="post">
+      <h1>Signup</h1>
+
+      <div class="input-box">
+        <input type="text" placeholder="First Name" required>
+        <i class='bx bxs-user'></i>
+      </div>
+
+      <div class="input-box">
+        <input type="text" placeholder="Last Name" required>
+        <i class='bx bxs-user'></i>
+      </div>
+
+      <div class="input-box">
+        <input type="date" placeholder="Birth Date" required>
+        <i class='bx bxs-calendar'></i>
+      </div>
+
+      <div class="input-box">
+        <input type="email" placeholder="Email" required>
+        <i class='bx bxs-envelope'></i>
+      </div>
+
+      <div class="input-box">
+        <input type="text" placeholder="Username" required>
+        <i class='bx bxs-user'></i>
+      </div>
+
+      <div class="input-box">
+        <input type="password" placeholder="Password" required oninput="checkPasswordStrength(this.value)">
+        <i class='bx bxs-lock-alt'></i>
+      </div>
+
+      <div class="strength-meter">
+        <div id="strength"></div>
+      </div>
+      <p id="strength-text" style="text-align: center; font-weight: bold;"></p>
+
+      <div class="input-box">
+        <input type="password" placeholder="Confirm Password" required>
+        <i class='bx bxs-lock-alt'></i>
+      </div>
+
+      <div class="input-box">
+        <select required>
+          <option value="">Select a security question</option>
+          <option value="pet">What was your first pet's name?</option>
+          <option value="school">What is the name of your elementary school?</option>
+          <option value="city">In what city were you born?</option>
+        </select>
+      </div>
+
+      <div class="input-box">
+        <input type="text" placeholder="Your Answer" required>
+        <i class='bx bxs-key'></i>
+      </div>
+
+      <div class="g-recaptcha" data-sitekey="your_site_key"></div>
+
+      <p style="font-size: 12px; margin-top: 10px;">Activation link will be sent to your email after sign up.</p>
+
+      <button type="submit" class="btn">Signup</button>
+
+      <div class="register-link">
+        <p>Have an account? <a href="login.html">Login Now</a></p>
+      </div>
+    </form>
+  </div>
 </body>
 </html>
