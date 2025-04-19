@@ -1,3 +1,9 @@
+<?php 
+if (session_status() == PHP_SESSION_NONE) {
+  session_start();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -67,52 +73,102 @@
         matchMessage.className = "match";
       }
     }
+
+    function sendVerificationEmail() {
+      date = new Date();
+      var template = {
+        'name': '<?php echo htmlspecialchars($_SESSION['fname']);?>',
+        'toEmail': '<?php echo htmlspecialchars($_SESSION['verify-email']);?>',
+        'timestamp': date.toDateString() + date.toLocaleTimeString(),
+        'verification_code': '<?php echo htmlspecialchars($_SESSION['verify-code']);?>'
+      };
+      emailjs.init({
+        publicKey: 'ECTSeMcGKIrjecfzP',
+        blockHeadless: true,
+        limitRate: {
+          id: 'app',
+          throttle: 10000
+        }
+      });
+      
+      emailjs.send('service_7tpn0mm', 'template_divc31p', template).then(
+        function(response) {
+          console.log("Successfully sent email: ", response);
+          window.parent.postMessage("email_sent_success", '*');
+          return true;
+        },
+
+        function(error) {
+          console.log("Failed to send email: ", error);
+          window.parent.postMessage("email_sent_error", '*');
+          return false;
+        }
+      );
+    }
+
+    window.onload.sendVerificationEmail();
   </script>
 </head>
 <body>
   <div class="wrapper">
-    <form action="" method="post">
+  <?php if(isset($_SESSION['verify-email'])): ?>
+    <form target='_top' method="POST">
+     <div class="verification-window">
+      <p>Sent verification email to $_SESSION['verify-email'].\nPlease enter verification code:\n</p>
+      <?php $_SESSION['verify-code'] = sprintf("%06d", mt_rand(100000, 999999));?>
+      </div>
+    </form>
+
+  <?php else : ?>
+    <form action="" method="POST" onsubmit="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>">
       <h1>Signup</h1>
 
       <!-- First Name -->
       <div class="input-box">
-        <input type="text" placeholder="First Name" name="first-name" required>
+        <input type="text" placeholder="First Name" name="first-name"
+        value="<?php echo htmlspecialchars($_POST['first-name'] ?? '');?>" required>
         <i class='bx bxs-user'></i>
       </div>
 
       <!-- Last Name -->
       <div class="input-box">
-        <input type="text" placeholder="Last Name" name="last-name" required>
+        <input type="text" placeholder="Last Name" name="last-name"
+        value="<?php echo htmlspecialchars($_POST['last-name'] ?? '');?>" required>
         <i class='bx bxs-user'></i>
       </div>
 
       <!-- Birth Date -->
       <div class="input-box">
-        <input type="date" name="birth-date" required>
+        <input type="date" name="birth-date"
+        value="<?php echo htmlspecialchars($_POST['birth-date'] ?? '');?>" required>
         <i class='bx bxs-calendar'></i>
       </div>
 
       <!-- Email -->
       <div class="input-box">
-        <input type="email" name="email" placeholder="Email" required>
+        <input type="email" name="email" placeholder="Email"
+        value="<?php echo htmlspecialchars($_POST['email'] ?? '');?>" required>
         <i class='bx bxs-envelope'></i>
       </div>
 
       <!-- Username -->
       <div class="input-box">
-        <input type="text" name="username" placeholder="Username" required>
+        <input type="text" name="username" placeholder="Username"
+        value="<?php echo htmlspecialchars($_POST['username'] ?? '');?>" required>
         <i class='bx bxs-user'></i>
       </div>
 
       <!-- Password -->
       <div class="input-box">
-        <input type="password" id="password" name="password" placeholder="Password" required oninput="checkPasswordStrength(this.value)">
+        <input type="password" id="password" name="password" placeholder="Password"
+        value="<?php echo htmlspecialchars($_POST['password'] ?? '');?>" required oninput="checkPasswordStrength(this.value)">
         <i class='bx bxs-lock-alt'></i>
       </div>
 
       <!-- Re-enter Password -->
       <div class="input-box">
-        <input type="password" id="re-enter-password" placeholder="Re-enter Password" required oninput="validatePasswordMatch()">
+        <input type="password" id="re-enter-password" placeholder="Re-enter Password"
+        value="<?php echo htmlspecialchars($_POST['re-enter-password'] ?? '');?>" required oninput="validatePasswordMatch()">
         <i class='bx bxs-lock-alt'></i>
       </div>
       <p id="password-match-message"></p>
@@ -158,7 +214,19 @@
       <div class="register-link">
         <p>Have an account? <a href="login.html">Login Now</a></p>
       </div>
+
+    <?php endif;?>
+    <?php
+    $_SESSION['fname'] = $_POST['first-name'];
+    $_SESSION['verify-email'] = $_POST['email'];
+    ?>
     </form>
   </div>
+
+  <?php 
+  unset($_SESSION['fname']);
+  unset($_SESSION['verify-email']);
+  unset($_SESSION['verify-code']);
+  ?>
 </body>
 </html>

@@ -90,3 +90,7 @@ body{
 .register-link p a:hover{
     text-decoration: underline;
 }
+
+.wrapper .verification-window{
+    background-color: white;
+}
