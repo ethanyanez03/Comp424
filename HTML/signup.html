@@ -87,7 +87,9 @@
     }
 
     function generateVerificationCode() {
-      return Math.floor(100000 + Math.random() * 900000);
+      const min = 100000;
+      const max = 999999;
+      return Math.floor(Math.random() * (max - min + 1) + min);
     }
 
     document.addEventListener('DOMContentLoaded', function () {
@@ -101,7 +103,7 @@
 
         const verificationCode = generateVerificationCode();
         const emailValue = document.getElementById('email').value;
-        const verificationLink = `<a href="http://127.0.0.1:5500/HTML/login.html" title="Verify your account">Verify your account here</a>`;
+        const verificationLink = `<a href="http://127.0.0.1:5500/HTML/verify_code.html" title="Verify your account">Verify your account here</a>`;
 
         const templateParams = {
           name: document.getElementById('first-name').value,

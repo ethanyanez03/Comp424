@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../CSS/verify_code.css" />
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <style>
+    /* Hide the arrow buttons for numeric input */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+</style>
+  </head>
+  <body>
+    <div class="wrapper">
+        <h1>Verify your account</h1>
+        <form class="input-box" action="login.html">
+        <input type="number" id="verify-code" placeholder="Enter 6-digit code" min="100000" max="999999" required></input>
+        <input class="btn" type="submit" id="verify" value="Verify"></input>
+    </form>
+    </div>
+  </body>
+  </html>
