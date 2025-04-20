@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../CSS/forgot.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <title>Forgot Username or Password</title>
+</head>
+<body>
+    <div class="wrapper">
+
+        <!-- Forgot Username Form -->
+        <form id="forgot-username" class="form-section active" action="#">
+            <h1>Forgot Username</h1>
+            <div class="input-box">
+                <input type="email" placeholder="Enter your email" required>
+                <i class='bx bxs-envelope'></i>
+            </div>
+            <button type="submit" class="btn">Recover Username</button>
+            <div class="register-link">
+                <p>Forgot your password? <a href="#" onclick="switchForm('forgot-password')">Click here</a></p>
+                <p>Remembered? <a href="login.html">Go to Login</a></p>
+            </div>
+        </form>
+
+        <!-- Forgot Password Form -->
+        <form id="forgot-password" class="form-section" action="#">
+            <h1>Forgot Password</h1>
+            <div class="input-box">
+                <input type="text" placeholder="Enter your username" required>
+                <i class='bx bxs-user'></i>
+            </div>
+            <div class="input-box">
+                <input type="email" placeholder="Enter your email" required>
+                <i class='bx bxs-envelope'></i>
+            </div>
+            <button type="submit" class="btn">Reset Password</button>
+            <div class="register-link">
+                <p>Forgot your username? <a href="#" onclick="switchForm('forgot-username')">Click here</a></p>
+                <p>Remembered? <a href="login.html">Go to Login</a></p>
+            </div>
+        </form>
+
+    </div>
+
+    <script>
+        function switchForm(formId) {
+            const forms = document.querySelectorAll('.form-section');
+            forms.forEach(form => form.classList.remove('active'));
+            document.getElementById(formId).classList.add('active');
+        }
+    </script>
+</body>
+</html>

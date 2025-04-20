@@ -6,9 +6,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../CSS/signup.css" />
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-  <title>Signup</title>
   <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  
+  <!-- ✅ Updated EmailJS SDK -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
   <script>
+    // ✅ Initialize EmailJS with your public key
+    window.onload = function() {
+      emailjs.init("m6PLiBb93HWVqEv7t"); // Replace with your actual EmailJS Public Key
+    };
+
     function checkPasswordStrength(password) {
       const numberCheckbox = document.getElementById("number-check");
       const uppercaseCheckbox = document.getElementById("uppercase-check");
@@ -62,68 +70,100 @@
       if (password !== reEnterPassword) {
         matchMessage.textContent = "Passwords do not match!";
         matchMessage.className = "no-match";
+        return false;
       } else {
         matchMessage.textContent = "Passwords match.";
         matchMessage.className = "match";
+        return true;
       }
     }
+
+    function validAccountCredentials() {
+      const letters = /^[A-Za-z]+$/;
+      const fname = document.getElementById('first-name').value;
+      const lname = document.getElementById('last-name').value;
+
+      return letters.test(fname) && letters.test(lname) && validatePasswordMatch();
+    }
+
+    function generateVerificationCode() {
+      return Math.floor(100000 + Math.random() * 900000);
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      document.getElementById('register').addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        if (!validAccountCredentials()) {
+          alert("Please fill all fields correctly.");
+          return;
+        }
+
+        const verificationCode = generateVerificationCode();
+        const emailValue = document.getElementById('email').value;
+
+        const templateParams = {
+          name: document.getElementById('first-name').value,
+          email: emailValue, // ✅ Make sure this matches your EmailJS template variable name
+          verification_code: verificationCode
+        };
+
+        console.log("Sending email to:", templateParams.email); // Debug log
+
+        emailjs.send('service_7tpn0mm', 'template_divc31p', templateParams)
+          .then(function (response) {
+            alert("Verification email sent! Please check your inbox.");
+            window.location.href = "login.html"; // Replace with the correct login page URL
+            console.log("SUCCESS!", response.status, response.text);
+          }, function (error) {
+            alert("Failed to send email. Try again.");
+            console.log("FAILED...", error);
+          });
+      });
+    });
   </script>
 </head>
 <body>
   <div class="wrapper">
-    <form action="" method="post">
+    <form id="register">
       <h1>Signup</h1>
 
-      <!-- First Name -->
       <div class="input-box">
-        <input type="text" placeholder="First Name" name="first-name" required>
+        <input type="text" placeholder="First Name" name="first-name" id="first-name" required>
         <i class='bx bxs-user'></i>
       </div>
 
-      <!-- Last Name -->
       <div class="input-box">
-        <input type="text" placeholder="Last Name" name="last-name" required>
+        <input type="text" placeholder="Last Name" name="last-name" id="last-name" required>
         <i class='bx bxs-user'></i>
       </div>
 
-      <!-- Birth Date -->
       <div class="input-box">
-        <input type="date" name="birth-date" required>
-        <i class='bx bxs-calendar'></i>
-      </div>
-
-      <!-- Email -->
-      <div class="input-box">
-        <input type="email" name="email" placeholder="Email" required>
+        <input type="email" name="email" placeholder="Email" id="email" required>
         <i class='bx bxs-envelope'></i>
       </div>
 
-      <!-- Username -->
       <div class="input-box">
-        <input type="text" name="username" placeholder="Username" required>
+        <input type="text" name="username" placeholder="Username" id="username" required>
         <i class='bx bxs-user'></i>
       </div>
 
-      <!-- Password -->
       <div class="input-box">
         <input type="password" id="password" name="password" placeholder="Password" required oninput="checkPasswordStrength(this.value)">
         <i class='bx bxs-lock-alt'></i>
       </div>
 
-      <!-- Re-enter Password -->
       <div class="input-box">
         <input type="password" id="re-enter-password" placeholder="Re-enter Password" required oninput="validatePasswordMatch()">
         <i class='bx bxs-lock-alt'></i>
       </div>
       <p id="password-match-message"></p>
 
-      <!-- Password Strength Bar -->
       <div class="password-strength">
         <div class="strength-bar" id="strength-bar"></div>
         <span id="strength-text" class="strength-text">Weak</span>
       </div>
 
-      <!-- Password Checklist -->
       <div class="password-requirements">
         <ul>
           <li><input type="checkbox" id="number-check" disabled> Numbers</li>
@@ -133,7 +173,6 @@
         </ul>
       </div>
 
-      <!-- Security Questions -->
       <div class="input-box">
         <select name="security-question" required>
           <option value="">Select a Security Question</option>
@@ -143,15 +182,14 @@
         </select>
         <i class='bx bxs-lock-alt'></i>
       </div>
+
       <div class="input-box">
         <input type="text" name="security-answer" placeholder="Answer to Security Question" required>
         <i class='bx bxs-lock-alt'></i>
       </div>
 
-      <!-- CAPTCHA -->
-      <div class="g-recaptcha" data-sitekey="your_site_key"></div>
-
-      <p style="font-size: 12px; margin-top: 10px;">Activation link will be sent to your email after sign up.</p>
+      <!-- CAPTCHA Placeholder -->
+      <!-- <div class="g-recaptcha" data-sitekey="your_site_key"></div> -->
 
       <button type="submit" id="submit-btn" class="btn" disabled>Signup</button>
 
