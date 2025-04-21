@@ -1,0 +1,66 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: url('image.jpg') no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
+.home-container {
+    width: 500px;
+    background: rgba(255, 255, 255, 0.8);
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+    padding: 40px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    text-align: center;
+}
+
+.content-box h1 {
+    font-size: 36px;
+    color: #333;
+    margin-bottom: 25px;
+}
+
+.user-info p {
+    font-size: 18px;
+    margin: 10px 0;
+    color: #333;
+}
+
+.download-section {
+    margin-top: 30px;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: black;
+    color: white;
+    text-decoration: none;
+    padding: 12px 25px;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: 600;
+    transition: background 0.3s ease;
+}
+
+.btn i {
+    margin-right: 10px;
+    font-size: 18px;
+}
+
+.btn:hover {
+    background-color: #333;
+}

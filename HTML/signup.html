@@ -5,16 +5,13 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../CSS/signup.css" />
-  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
   <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-  
-  <!-- ✅ Updated EmailJS SDK -->
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
   <script>
-    // ✅ Initialize EmailJS with your public key
-    window.onload = function() {
-      emailjs.init("m6PLiBb93HWVqEv7t"); // Replace with your actual EmailJS Public Key
+    window.onload = function () {
+      emailjs.init("m6PLiBb93HWVqEv7t"); // Replace with your EmailJS Public Key
     };
 
     function checkPasswordStrength(password) {
@@ -101,6 +98,12 @@
           return;
         }
 
+        const recaptchaResponse = grecaptcha.getResponse();
+        if (!recaptchaResponse) {
+          alert("Please complete the reCAPTCHA.");
+          return;
+        }
+
         const verificationCode = generateVerificationCode();
         const emailValue = document.getElementById('email').value;
         const host = window.location.host;
@@ -108,21 +111,18 @@
 
         const templateParams = {
           name: document.getElementById('first-name').value,
-          email: emailValue, // ✅ Make sure this matches your EmailJS template variable name
+          email: emailValue,
           verification_link: verificationLink,
           verification_code: verificationCode
         };
 
-        console.log("Sending email to:", templateParams.email); // Debug log
-
         emailjs.send('service_7tpn0mm', 'template_divc31p', templateParams)
           .then(function (response) {
             alert("Verification email sent! Please check your inbox.");
-            window.location.href = "login.html"; // Replace with the correct login page URL
-            console.log("SUCCESS!", response.status, response.text);
+            window.location.href = "login.html";
           }, function (error) {
             alert("Failed to send email. Try again.");
-            console.log("FAILED...", error);
+            console.error("FAILED...", error);
           });
       });
     });
@@ -193,8 +193,8 @@
         <i class='bx bxs-lock-alt'></i>
       </div>
 
-      <!-- CAPTCHA Placeholder -->
-      <!-- <div class="g-recaptcha" data-sitekey="your_site_key"></div> -->
+      <!-- ✅ reCAPTCHA widget -->
+      <div class="g-recaptcha" data-sitekey="6Ld8Rh8rAAAAAMe7hFYSzfkQiBYJ6mItdHQuk5A6"></div>
 
       <button type="submit" id="submit-btn" class="btn">Signup</button>
 
