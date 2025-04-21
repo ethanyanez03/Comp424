@@ -6,7 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../CSS/signup.css" />
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+  <script src="https://hcaptcha.com/1/api.js" async defer></script>
+
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
   <script>
@@ -98,11 +100,12 @@
           return;
         }
 
-        const recaptchaResponse = grecaptcha.getResponse();
-        if (!recaptchaResponse) {
-          alert("Please complete the reCAPTCHA.");
-          return;
+        const hcaptchaResponse = hcaptcha.getResponse();
+          if (!hcaptchaResponse) {
+            alert("Please complete the CAPTCHA.");
+        return;
         }
+
 
         const verificationCode = generateVerificationCode();
         const emailValue = document.getElementById('email').value;
@@ -194,7 +197,7 @@
       </div>
 
       <!-- ✅ reCAPTCHA widget -->
-      <div class="g-recaptcha" data-sitekey="6Ld9Sh8rAAAAAK1EfUI9oqajiRQYjILoIhA5OQT0"></div>
+      <div class="h-captcha" data-sitekey="dc88cd92-d376-4976-b77e-bd6ef170a206"></div>
 
       <button type="submit" id="submit-btn" class="btn">Signup</button>
 
