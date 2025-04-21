@@ -10,7 +10,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Your reCAPTCHA secret key
-const RECAPTCHA_SECRET_KEY = '6Ld8Rh8rAAAAAF97SE6lfTciHYC9vuiv8Hp1RAKL'; // Replace with your secret key
+const RECAPTCHA_SECRET_KEY = '6Ld9Sh8rAAAAADo_fxiW2zlWAREXZkRvELYHxClW'; // Replace with your secret key
 
 // POST endpoint for handling signup
 app.post('/signup', async (req, res) => {
@@ -41,5 +41,6 @@ app.post('/signup', async (req, res) => {
 
 // Start the server
 app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+  const host = window.location.host;
+  console.log(`Server is running on http://${host}:${port}`);
 });
