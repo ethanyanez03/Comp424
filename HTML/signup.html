@@ -103,7 +103,8 @@
 
         const verificationCode = generateVerificationCode();
         const emailValue = document.getElementById('email').value;
-        const verificationLink = `<a href="http://127.0.0.1:5500/HTML/verify_code.html" title="Verify your account">Verify your account here</a>`;
+        const host = window.location.host;
+        const verificationLink = `<a href="http://${host}/HTML/verify_code.html" title="Verify your account">Verify your account here</a>`;
 
         const templateParams = {
           name: document.getElementById('first-name').value,
