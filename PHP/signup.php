@@ -3,7 +3,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-$servername = "authentication.c6xqcw662dx5.us-east-1.rds.amazonaws.com";
+$servername = "user.c6xqcw662dx5.us-east-1.rds.amazonaws.com";
 $username = "admin";
 $password = "5prin32025Gr0up";
 $dbname = "comp424";
