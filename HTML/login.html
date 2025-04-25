@@ -35,16 +35,16 @@
   <script>
     document.getElementById('login-form').addEventListener('submit', function(e) {
       e.preventDefault();
-
+  
       const formData = new FormData(this);
-
+  
       fetch('/projects/Comp424/PHP/login.php', {
         method: 'POST',
         body: formData
       })
       .then(response => response.json())
       .then(data => {
-        if (data.success) {
+        if (data.status === "success") {
           window.location.href = "home.html";
         } else {
           alert(data.message || "Login failed.");
@@ -55,6 +55,6 @@
         alert("Something went wrong. Try again.");
       });
     });
-  </script>
+  </script>  
 </body>
 </html>

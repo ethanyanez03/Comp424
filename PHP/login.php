@@ -1,48 +1,58 @@
 <?php
-// Show errors for debugging
+// Set correct content-type
+header('Content-Type: application/json');
+
+// Debugging (remove in production)
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// Connect to RDS
+// DB connection
 $servername = "user.c6xqcw662dx5.us-east-1.rds.amazonaws.com";
 $username = "admin";
 $password = "5prin32025Gr0up";
 $dbname = "comp424";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
+
 if ($conn->connect_error) {
-  die(json_encode(["success" => false, "message" => "Database connection failed."]));
+    echo json_encode(["status" => "error", "message" => "Database connection failed."]);
+    exit();
 }
 
-// Handle POST
+// Only process POST requests
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-  $input_user = $_POST['username'];
-  $input_pw = $_POST['password'];
+    $inputUsername = $_POST['username'] ?? '';
+    $inputPassword = $_POST['password'] ?? '';
 
-  // Look up user
-  $stmt = $conn->prepare("SELECT password FROM users WHERE username = ?");
-  $stmt->bind_param("s", $input_user);
-  $stmt->execute();
-  $stmt->store_result();
-
-  if ($stmt->num_rows === 1) {
-    $stmt->bind_result($hashed_pw);
-    $stmt->fetch();
-
-    // Verify password
-    if (password_verify($input_pw, $hashed_pw)) {
-      echo json_encode(["success" => true]);
-    } else {
-      echo json_encode(["success" => false, "message" => "Incorrect password."]);
+    // Validate fields
+    if (empty($inputUsername) || empty($inputPassword)) {
+        echo json_encode(["status" => "error", "message" => "Username and password required."]);
+        exit();
     }
-  } else {
-    echo json_encode(["success" => false, "message" => "User not found."]);
-  }
 
-  $stmt->close();
+    // Query user
+    $stmt = $conn->prepare("SELECT password FROM users WHERE username = ?");
+    $stmt->bind_param("s", $inputUsername);
+    $stmt->execute();
+    $stmt->store_result();
+
+    if ($stmt->num_rows === 1) {
+        $stmt->bind_result($hashedPassword);
+        $stmt->fetch();
+
+        if (password_verify($inputPassword, $hashedPassword)) {
+            echo json_encode(["status" => "success", "message" => "Login successful"]);
+        } else {
+            echo json_encode(["status" => "error", "message" => "Incorrect password."]);
+        }
+    } else {
+        echo json_encode(["status" => "error", "message" => "Username not found."]);
+    }
+
+    $stmt->close();
 } else {
-  echo json_encode(["success" => false, "message" => "Invalid request."]);
+    echo json_encode(["status" => "error", "message" => "Invalid request method."]);
 }
 
 $conn->close();
