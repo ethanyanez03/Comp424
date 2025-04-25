@@ -20,19 +20,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   $first_name = $_POST['first-name'];
   $last_name = $_POST['last-name'];
+  $birth_date = $_POST['birth-date'];
   $email = $_POST['email'];
   $user = $_POST['username'];
   $pw = password_hash($_POST['password'], PASSWORD_DEFAULT);
   $question = $_POST['security-question'];
   $answer = $_POST['security-answer'];
 
-  $stmt = $conn->prepare("INSERT INTO users (first_name, last_name, email, username, password, security_question, security_answer) VALUES (?, ?, ?, ?, ?, ?, ?)");
+  $stmt = $conn->prepare("INSERT INTO users (first_name, last_name, email, username, password, birth_date, security_question, security_answer, created_at, verify_code) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
   if (!$stmt) {
     die("Prepare failed: " . $conn->error);
   }
 
-  $stmt->bind_param("sssssss", $first_name, $last_name, $email, $user, $pw, $question, $answer);
+  $t = time();
+  $stmt->bind_param("sssssss", $first_name, $last_name, $email, $user, $pw, $birth_date, $question, $answer, $t, );
 
   if ($stmt->execute()) {
     echo "Signup successful!";
