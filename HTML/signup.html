@@ -13,7 +13,7 @@
 
   <script>
     window.onload = function () {
-      emailjs.init("m6PLiBb93HWVqEv7t"); // Replace with your EmailJS Public Key
+      emailjs.init("m6PLiBb93HWVqEv7t");
     };
 
     function checkPasswordStrength(password) {
@@ -113,27 +113,45 @@
         const verificationLink = `<a href="http://${host}/HTML/verify_code.html" title="Verify your account">Verify your account here</a>`;
 
         const templateParams = {
-          name: document.getElementById('first-name').value,
-          email: emailValue,
+          name: document.getElementById('first-name').value,		
+	        email: emailValue,
           verification_link: verificationLink,
           verification_code: verificationCode
         };
 
+        //new updated version
         emailjs.send('service_7tpn0mm', 'template_divc31p', templateParams)
           .then(function (response) {
-            alert("Verification email sent! Please check your inbox.");
-            window.location.href = "login.html";
+            //After EmailJS succeeds, send form data to signup.php
+            const form = document.getElementById('register');
+            const formData = new FormData(form);
+
+            fetch('/projects/Comp424/PHP/signup.php', {
+              method: 'POST',
+              body: formData
+            })
+            .then(res => res.text())
+            .then(data => {
+              console.log("PHP response:", data);
+              alert("Signup successful! Redirecting to login.");
+              window.location.href = "login.html";
+            })
+            .catch(err => {
+              console.error("Error sending to PHP:", err);
+              alert("Something went wrong saving your data.");
+            });
           }, function (error) {
             alert("Failed to send email. Try again.");
             console.error("FAILED...", error);
           });
+
       });
     });
   </script>
 </head>
 <body>
   <div class="wrapper">
-    <form id="register">
+    <form id="register" action="../PHP/signup.php" method="POST">
       <h1>Signup</h1>
 
       <div class="input-box">
@@ -197,7 +215,7 @@
       </div>
 
       <!-- ✅ reCAPTCHA widget -->
-      <div class="h-captcha" data-sitekey="dc88cd92-d376-4976-b77e-bd6ef170a206"></div>
+      <div class="g-recaptcha" data-sitekey="6Ld9Sh8rAAAAAK1EfUI9oqajiRQYjILoIhA5OQT0"></div>
 
       <button type="submit" id="submit-btn" class="btn">Signup</button>
 
