@@ -5,7 +5,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="../CSS/login.css">
-  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
   <title>Login</title>
 </head>
 <body>
@@ -14,49 +14,45 @@
       <h1>Login</h1>
 
       <div class="input-box">
-        <input type="text" name="username" id="username" placeholder="Username" required>
+        <input type="text" name="username" placeholder="Username" required>
         <i class='bx bxs-user'></i>
       </div>
 
       <div class="input-box">
-        <input type="password" name="password" id="password" placeholder="Password" required>
+        <input type="password" name="password" placeholder="Password" required>
         <i class='bx bxs-lock-alt'></i>
       </div>
 
       <button type="submit" class="btn">Login</button>
 
       <div class="register-link">
-        <p>Don’t have an account? <a href="signup.html">Signup Now</a></p>
+        <p>Don't have an account? <a href="signup.html">Signup Now</a></p>
         <p>Forgot Password/Username? <a href="forgot.html">Click Here</a></p>
       </div>
     </form>
   </div>
 
   <script>
-    document.getElementById('login-form').addEventListener('submit', function(event) {
-      event.preventDefault();
-      const formData = new FormData(event.target);
+    document.getElementById('login-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const formData = new FormData(this);
 
       fetch('/projects/Comp424/PHP/login.php', {
         method: 'POST',
         body: formData
       })
-      .then(res => res.text())
-      .then(response => {
-        if (response.trim() === "success") {
-          alert("Login successful!");
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
           window.location.href = "home.html";
-        } else if (response.trim() === "invalid") {
-          alert("Incorrect password.");
-        } else if (response.trim() === "not found") {
-          alert("User not found.");
         } else {
-          alert("An error occurred: " + response);
+          alert(data.message || "Login failed.");
         }
       })
-      .catch(err => {
-        console.error("Fetch error:", err);
-        alert("Could not connect to server.");
+      .catch(error => {
+        console.error("Login request error:", error);
+        alert("Something went wrong. Try again.");
       });
     });
   </script>
