@@ -70,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           "last_login" => $today
         ];
 
-      echo json_encode(["success" => true, "message" => "Login successful."]);
+      echo json_encode(["success" => true, "message" => "Login successful.", "username" => $inputUsername]);
     } else {
       echo json_encode(["success" => false, "message" => "Incorrect password."]);
     }

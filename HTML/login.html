@@ -14,7 +14,7 @@
       <h1>Login</h1>
 
       <div class="input-box">
-        <input type="text" name="username" placeholder="Username" required />
+        <input type="text" id="username" name="username" placeholder="Username" required />
         <i class='bx bxs-user'></i>
       </div>
 
@@ -35,7 +35,8 @@
   <script>
     document.getElementById('login-form').addEventListener('submit', function (e) {
       e.preventDefault();
-
+      const user = document.getElementById('username').value;
+      sessionStorage.setItem('username', user);
       const formData = new FormData(this);
 
       fetch('../PHP/login.php', {
