@@ -45,7 +45,7 @@
         .then(res => res.json())
         .then(data => {
           if (data.success) {
-            window.location.href = "home.php";
+            window.location.href = "/projects/Comp424/PHP/home.php";
           } else {
             alert(data.message || "Login failed.");
           }
