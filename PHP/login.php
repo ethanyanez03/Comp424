@@ -3,6 +3,8 @@ header('Content-Type: application/json');
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
+date_default_timezone_set("America/Los_Angeles");
+
 // DB connection
 $servername = "user.c6xqcw662dx5.us-east-1.rds.amazonaws.com";
 $username = "admin";
