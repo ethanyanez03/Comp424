@@ -33,10 +33,7 @@
   </div>
 
   <script>
-    document.getElementById('login-form').addEventListener('submit', function (e) {
-      e.preventDefault();
-      const user = document.getElementById('username').value;
-      sessionStorage.setItem('username', user);
+    document.getElementById('login-form').addEventListener('submit', function () {
       const formData = new FormData(this);
 
       fetch('../PHP/login.php', {
@@ -46,7 +43,7 @@
         .then(res => res.json())
         .then(data => {
           if (data.success) {
-            window.location.href = "/projects/Comp424/PHP/home.php";
+            window.location.href = "../PHP/home.php";
           } else {
             alert(data.message || "Login failed.");
           }

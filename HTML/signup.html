@@ -142,8 +142,6 @@
             .then(data => {
               console.log("PHP response:", data);
               alert("Signup successful! Redirecting to login.");
-              const user = document.getElementById('username').value;
-              sessionStorage.setItem('username', user);
               window.location.href = "login.html";
             })
             .catch(err => {

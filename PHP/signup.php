@@ -53,8 +53,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     die("Prepare failed: " . $conn->error);
   }
 
-  $t = time();
-  $stmt->bind_param("sssssssssi", $first_name, $last_name, $email, $user, $pw, $birth_date, $question, $answer, $t, $verify_code);
+  $date = date("Y-m-d H:i:s");
+  $stmt->bind_param("sssssssssi", $first_name, $last_name, $email, $user, $pw, $birth_date, $question, $answer, $date, $verify_code);
 
   if ($stmt->execute()) {
     echo "Signup successful!";

@@ -24,21 +24,10 @@
     </form>
     </div>
     <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        const username = sessionStorage.getItem('username');
-        console.log(username);
   
-        if (username == null) {
-          console.error("Failed to find user.");
-        } else {
-          console.log("Found user.");
-        }
-  
-      document.getElementById('verify').addEventListener('submit', (e) => {
-        e.preventDefault();
+      document.getElementById('verify').addEventListener('submit', () => {
         const form = document.getElementById('verify');
         const formData = new FormData(form);
-        formData.append("username", username);
   
         fetch("../PHP/verify_code.php", {
           method: "POST",
@@ -58,7 +47,6 @@
             alert("There is a server problem. Please try again.");
         });
     });
-  });
       </script>
   </body>
   </html>
