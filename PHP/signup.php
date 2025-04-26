@@ -19,13 +19,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   print_r($_POST);  // Show raw data
   $doc = null;
   try {
-    $doc = new DomDocument;
-    $doc->validateOnParse = true;
-    $doc->load('../HTML/signup.html');
+    $doc = new DOMDocument();
+    libxml_use_internal_errors(true); // Suppress errors/warnings
+
+    $html = file_get_contents('../HTML/signup.html'); // Load HTML as a string
+    $doc->loadHTML($html); // Parse the HTML
+    libxml_clear_errors();
   }
 
   catch(Exception $err) {
-    echo "Unknown file.";
+    echo "Unknown DOM file.";
   }
 
   $first_name = $_POST['first-name'];
@@ -36,7 +39,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $pw = password_hash($_POST['password'], PASSWORD_DEFAULT);
   $question = $_POST['security-question'];
   $answer = $_POST['security-answer'];
-  $verify_code = $doc->getElementById('verify-code');
+
+  if (!isset($_POST['verify-code'])) {
+    echo "Missing verification code.";
+    exit;
+  }
+  
+  $verify_code = intval($_POST['verify-code']);
 
   $stmt = $conn->prepare("INSERT INTO users (first_name, last_name, email, username, password, birth_date, security_question, security_answer, created_at, verify_code) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
