@@ -17,19 +17,6 @@ if ($conn->connect_error) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   echo "Form submitted<br>";
   print_r($_POST);  // Show raw data
-  $doc = null;
-  try {
-    $doc = new DOMDocument();
-    libxml_use_internal_errors(true); // Suppress errors/warnings
-
-    $html = file_get_contents('../HTML/signup.html'); // Load HTML as a string
-    $doc->loadHTML($html); // Parse the HTML
-    libxml_clear_errors();
-  }
-
-  catch(Exception $err) {
-    echo "Unknown DOM file.";
-  }
 
   $first_name = $_POST['first-name'];
   $last_name = $_POST['last-name'];
