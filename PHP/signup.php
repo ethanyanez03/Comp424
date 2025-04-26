@@ -17,6 +17,16 @@ if ($conn->connect_error) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   echo "Form submitted<br>";
   print_r($_POST);  // Show raw data
+  $doc = null;
+  try {
+    $doc = new DomDocument;
+    $doc->validateOnParse = true;
+    $doc->load('../HTML/signup.html');
+  }
+
+  catch(Exception $err) {
+    echo "Unknown file.";
+  }
 
   $first_name = $_POST['first-name'];
   $last_name = $_POST['last-name'];
@@ -26,6 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $pw = password_hash($_POST['password'], PASSWORD_DEFAULT);
   $question = $_POST['security-question'];
   $answer = $_POST['security-answer'];
+  $verify_code = $doc->getElementById('verify-code');
 
   $stmt = $conn->prepare("INSERT INTO users (first_name, last_name, email, username, password, birth_date, security_question, security_answer, created_at, verify_code) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
@@ -34,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
 
   $t = time();
-  $stmt->bind_param("sssssss", $first_name, $last_name, $email, $user, $pw, $birth_date, $question, $answer, $t, );
+  $stmt->bind_param("sssssssssi", $first_name, $last_name, $email, $user, $pw, $birth_date, $question, $answer, $t, $verify_code);
 
   if ($stmt->execute()) {
     echo "Signup successful!";

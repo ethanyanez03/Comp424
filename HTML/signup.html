@@ -108,6 +108,11 @@
 
 
         const verificationCode = generateVerificationCode();
+        let valueInput = document.createElement('input');
+        valueInput.type = 'number';
+        valueInput.id = 'verify-code';
+        valueInput.value = verificationCode;
+
         const emailValue = document.getElementById('email').value;
         const host = window.location.host;
         const verificationLink = `<a href="http://${host}/HTML/verify_code.html" title="Verify your account">Verify your account here</a>`;
