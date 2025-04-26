@@ -40,6 +40,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->fetch();
 
     if (password_verify($inputPassword, $hashedPassword)) {
+        session_start();
+
+        // Optional: Fetch full user info
+        $userQuery = $conn->prepare("SELECT first_name, last_name, signed_in FROM users WHERE username = ?");
+        $userQuery->bind_param("s", $inputUsername);
+        $userQuery->execute();
+        $userQuery->bind_result($firstName, $lastName, $loginCount);
+        $userQuery->fetch();
+        $userQuery->close();
+      
+        // Increment login count & update last login
+        $newCount = $loginCount + 1;
+        $today = date("Y-m-d");
+        $updateStmt = $conn->prepare("UPDATE users SET signed_in = ?, last_login = ? WHERE username = ?");
+        $updateStmt->bind_param("iss", $newCount, $today, $inputUsername);
+        $updateStmt->execute();
+        $updateStmt->close();
+      
+        $_SESSION['user'] = [
+          "username" => $inputUsername,
+          "first_name" => $firstName,
+          "last_name" => $lastName,
+          "login_count" => $newCount,
+          "last_login" => $today
+        ];
+
       echo json_encode(["success" => true, "message" => "Login successful."]);
     } else {
       echo json_encode(["success" => false, "message" => "Incorrect password."]);
