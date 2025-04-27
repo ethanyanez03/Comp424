@@ -98,6 +98,7 @@
             const formBody = new FormData(this);
             fetch('../PHP/forgot.php', {
                 method: "POST",
+                credentials: 'include',
                 body: formBody
             }).then(res => res.text())
             .then(text => {

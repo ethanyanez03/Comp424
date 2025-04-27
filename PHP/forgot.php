@@ -1,4 +1,8 @@
 <?php
+if (session_status() != PHP_SESSION_ACTIVE) {
+    session_start();
+}
+
 header('Content-Type: application/json');
 error_reporting(E_ALL);
 
@@ -44,6 +48,8 @@ $connection = mysqli_connect($host, $user, $password, $db);
                 echo json_encode(["success" => false, "message" => "Please enter your email."]);
                 exit();
             }
+
+            $_SESSION['reset_email'] = $reset_email;
 
             $q = $connection->prepare("SELECT password FROM users WHERE email = ?");
             $q->bind_param("s", $reset_email);
