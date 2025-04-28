@@ -1,7 +1,8 @@
 <?php
-header('Content-Type: application/json');
+session_start();
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
+date_default_timezone_set("America/Los_Angeles");
 
 // DB connection
 $servername = "user.c6xqcw662dx5.us-east-1.rds.amazonaws.com";
@@ -11,6 +12,7 @@ $dbname = "comp424";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
+  http_response_code(500);
   echo json_encode(["success" => false, "message" => "Database connection failed."]);
   exit();
 }
@@ -21,12 +23,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $inputPassword = $_POST['password'] ?? '';
 
   if (empty($inputUsername) || empty($inputPassword)) {
+    http_response_code(400);
     echo json_encode(["success" => false, "message" => "Username and password required."]);
     exit();
   }
 
   $stmt = $conn->prepare("SELECT password FROM users WHERE username = ?");
   if (!$stmt) {
+    http_response_code(500);
     echo json_encode(["success" => false, "message" => "Database error."]);
     exit();
   }
@@ -40,7 +44,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->fetch();
 
     if (password_verify($inputPassword, $hashedPassword)) {
-        session_start();
 
         // Optional: Fetch full user info
         $userQuery = $conn->prepare("SELECT first_name, last_name, signed_in, verified FROM users WHERE username = ?");
@@ -70,16 +73,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           "last_login" => $today
         ];
 
-      echo json_encode(["success" => true, "message" => "Login successful.", "username" => $inputUsername]);
+      header("Location: /PHP/home.php");
+      exit();
     } else {
+      http_response_code(401);
       echo json_encode(["success" => false, "message" => "Incorrect password."]);
     }
   } else {
+    http_response_code(404);
     echo json_encode(["success" => false, "message" => "Username not found."]);
   }
 
   $stmt->close();
 } else {
+  http_response_code(405);
   echo json_encode(["success" => false, "message" => "Invalid request method."]);
 }
 
