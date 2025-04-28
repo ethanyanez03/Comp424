@@ -7,11 +7,53 @@
     <link rel="stylesheet" href="../CSS/reset.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <script>
-        function validatePasswords() {
-            const newPassword = document.getElementById('new-password').value;
-            const confirmPassword = document.getElementById('confirm-password').value;
-            const message = document.getElementById('password-message');
-            
+
+function checkPasswordStrength(password) {
+      const numberCheckbox = document.getElementById("number-check");
+      const uppercaseCheckbox = document.getElementById("uppercase-check");
+      const specialCharCheckbox = document.getElementById("special-check");
+      const minLengthCheckbox = document.getElementById("length-check");
+      const strengthBar = document.getElementById("strength-bar");
+      const strengthText = document.getElementById("strength-text");
+
+      let hasNumber = /\d/.test(password);
+      let hasUppercase = /[A-Z]/.test(password);
+      let hasSpecialChar = /[^A-Za-z0-9]/.test(password);
+      let hasMinLength = password.length >= 8;
+      let strength = 0;
+
+      numberCheckbox.checked = hasNumber;
+      uppercaseCheckbox.checked = hasUppercase;
+      specialCharCheckbox.checked = hasSpecialChar;
+      minLengthCheckbox.checked = hasMinLength;
+
+      if (hasNumber) strength++;
+      if (hasUppercase) strength++;
+      if (hasSpecialChar) strength++;
+      if (hasMinLength) strength++;
+
+      const strengthPercentage = (strength / 4) * 100;
+      strengthBar.style.width = strengthPercentage + "%";
+
+      if (strengthPercentage < 40) {
+        strengthText.textContent = "Weak";
+        strengthText.style.color = "red";
+        strengthBar.style.backgroundColor = "red";
+      } else if (strengthPercentage < 70) {
+        strengthText.textContent = "Moderate";
+        strengthText.style.color = "blue";
+        strengthBar.style.backgroundColor = "blue";
+      } else {
+        strengthText.textContent = "Strong";
+        strengthText.style.color = "green";
+        strengthBar.style.backgroundColor = "green";
+      }
+
+      const submitBtn = document.getElementById("submit-btn");
+      submitBtn.disabled = !(hasNumber && hasUppercase && hasSpecialChar && hasMinLength);
+    }
+
+        function passwordsMatch(newPassword, confirmPassword, message) {
             if (newPassword !== confirmPassword) {
                 message.textContent = "Passwords do not match!";
                 message.style.color = "red";
@@ -20,30 +62,104 @@
 
             message.textContent = "Passwords match!";
             message.style.color = "green";
-            
-            // Simulate form submission and redirect to login page
-            setTimeout(() => {
-                window.location.href = "login.html";  // Redirect to login page
-            }, 1000);  // Delay for 1 second before redirecting
-
-            return false;  // Prevent actual form submission
+            return true;
         }
+        
+        function validatePasswords() {
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const message = document.getElementById('password-message');
+
+            if (passwordsMatch(newPassword, confirmPassword, message)) {
+                console.log("New password accepted.");
+                return true;
+            }
+
+            console.error("New password not accepted");
+            return false;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('reset-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const new_password = document.getElementById('new-password').value;
+        const old_password = document.getElementById('old-password').value;
+        const new_element = document.createElement('input');
+        const old_element = document.createElement('input');
+
+        new_element.type = 'hidden';
+        new_element.name = 'new-password';
+        new_element.value = new_password;
+        old_element.type = 'hidden';
+        old_element.name = 'old-password';
+        old_element.value = old_password;
+
+        if(validatePasswords()) {
+            const form = document.getElementById('reset-form');
+            form.appendChild(new_element);
+            form.appendChild(old_element);
+            const formData = new FormData(form);
+            fetch('../PHP/reset.php', {
+                method: "POST",
+                credentials: 'include',
+                body: formData
+            }).then(res => res.text())
+            .then(text => {
+              console.log("PHP response:", text);
+              data = JSON.parse(text);
+              if (data.success) {
+                alert("Successfully changed password!");
+              
+                // Simulate form submission and redirect to login page
+                setTimeout(() => {
+                    window.location.href = "login.html";  // Redirect to login page
+                    }, 1000);
+                }
+            })
+            .catch(err => {
+              console.error("Error sending to PHP:", err);
+              alert("Failed to reset your password.");
+            });
+        }
+    });
+        });
+        
     </script>
 </head>
 <body>
     <div class="wrapper">
-        <form id="reset-form" onsubmit="return validatePasswords()">
+        <form id="reset-form" method="POST">
             <h1>Reset Password</h1>
             <div class="input-box">
-                <input type="password" id="new-password" placeholder="New Password" required>
+                <input type="password" id="old-password" placeholder="Old Password" required>
+                <i class='bx bxs-lock-alt'></i>
+            </div>
+            <div class="input-box">
+                <input type="password" id="new-password" placeholder="New Password" required oninput="checkPasswordStrength(this.value)">
                 <i class='bx bxs-lock-alt'></i>
             </div>
             <div class="input-box">
                 <input type="password" id="confirm-password" placeholder="Re-enter Password" required>
                 <i class='bx bxs-lock-alt'></i>
             </div>
+
+            <p id="password-match-message"></p>
+
+      <div class="password-strength">
+        <div class="strength-bar" id="strength-bar"></div>
+        <span id="strength-text" class="strength-text">Weak</span>
+      </div>
+
+      <div class="password-requirements">
+        <ul>
+          <li><input type="checkbox" id="number-check" disabled> Numbers</li>
+          <li><input type="checkbox" id="special-check" disabled> Special Characters</li>
+          <li><input type="checkbox" id="uppercase-check" disabled> Uppercase</li>
+          <li><input type="checkbox" id="length-check" disabled> 8 Characters</li>
+        </ul>
+      </div>
+      <div id="password-message" class="password-message"></div>
             <button type="submit" class="btn">Submit</button>
-            <div id="password-message" class="password-message"></div>
             <div class="login-link">
                 <p>Remembered your password? <a href="login.html">Login Here</a></p>
             </div>

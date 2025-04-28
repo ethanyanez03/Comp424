@@ -43,13 +43,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         session_start();
 
         // Optional: Fetch full user info
-        $userQuery = $conn->prepare("SELECT first_name, last_name, signed_in FROM users WHERE username = ?");
+        $userQuery = $conn->prepare("SELECT first_name, last_name, signed_in, verified FROM users WHERE username = ?");
         $userQuery->bind_param("s", $inputUsername);
         $userQuery->execute();
-        $userQuery->bind_result($firstName, $lastName, $loginCount);
+        $userQuery->bind_result($firstName, $lastName, $loginCount, $verified);
         $userQuery->fetch();
         $userQuery->close();
-      
+
+        if ($verified == 0) {
+          echo json_encode(["success" => false, "message" => "Please verify your account before signing in."]);
+          exit();
+        }
         // Increment login count & update last login
         $newCount = $loginCount + 1;
         $today = date("Y-m-d");
@@ -66,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           "last_login" => $today
         ];
 
-      echo json_encode(["success" => true, "message" => "Login successful."]);
+      echo json_encode(["success" => true, "message" => "Login successful.", "username" => $inputUsername]);
     } else {
       echo json_encode(["success" => false, "message" => "Incorrect password."]);
     }

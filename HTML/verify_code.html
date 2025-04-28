@@ -18,10 +18,35 @@
   <body>
     <div class="wrapper">
         <h1>Verify your account</h1>
-        <form class="input-box" action="login.html">
-        <input type="number" id="verify-code" placeholder="Enter 6-digit code" min="100000" max="999999" required></input>
+        <form class="input-box" id = "verify" method="POST">
+        <input type="number" id="verify-code" name="verify-code" placeholder="Enter 6-digit code" min="100000" max="999999" required></input>
         <input class="btn" type="submit" id="verify" value="Verify"></input>
     </form>
     </div>
+    <script>
+  
+      document.getElementById('verify').addEventListener('submit', () => {
+        const form = document.getElementById('verify');
+        const formData = new FormData(form);
+  
+        fetch("../PHP/verify_code.php", {
+          method: "POST",
+          body: formData
+        }).then(res => res.json())
+        .then(data => {
+          console.log("Response: ", data);
+          if (data.success) {
+            window.location.href = "login.html";
+          }
+  
+          else if (data.status == 401) {
+            alert("Invalid code.");
+          }
+        }).catch(error => {
+            console.error("Problem with verification: ", error);
+            alert("There is a server problem. Please try again.");
+        });
+    });
+      </script>
   </body>
   </html>

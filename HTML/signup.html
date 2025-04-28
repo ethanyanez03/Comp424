@@ -108,6 +108,13 @@
 
 
         const verificationCode = generateVerificationCode();
+        let valueInput = document.createElement('input');
+        valueInput.type = 'hidden';
+        valueInput.id = 'verify-code';
+        valueInput.name = 'verify-code';
+        valueInput.value = verificationCode;
+        valueInput.autocomplete = 'one-time-code';
+
         const emailValue = document.getElementById('email').value;
         const host = window.location.host;
         const verificationLink = `<a href="http://${host}/HTML/verify_code.html" title="Verify your account">Verify your account here</a>`;
@@ -118,15 +125,16 @@
           verification_link: verificationLink,
           verification_code: verificationCode
         };
-
+      
         //new updated version
         emailjs.send('service_7tpn0mm', 'template_divc31p', templateParams)
           .then(function (response) {
             //After EmailJS succeeds, send form data to signup.php
             const form = document.getElementById('register');
+            form.appendChild(valueInput);
             const formData = new FormData(form);
 
-            fetch('/projects/Comp424/PHP/signup.php', {
+            fetch('../PHP/signup.php', {
               method: 'POST',
               body: formData
             })
@@ -155,32 +163,37 @@
       <h1>Signup</h1>
 
       <div class="input-box">
-        <input type="text" placeholder="First Name" name="first-name" id="first-name" required>
+        <input type="text" placeholder="First Name" name="first-name" id="first-name" required autocomplete="given-name">
         <i class='bx bxs-user'></i>
       </div>
 
       <div class="input-box">
-        <input type="text" placeholder="Last Name" name="last-name" id="last-name" required>
+        <input type="text" placeholder="Last Name" name="last-name" id="last-name" required autocomplete="family-name">
         <i class='bx bxs-user'></i>
       </div>
 
       <div class="input-box">
-        <input type="email" name="email" placeholder="Email" id="email" required>
+        <input type="date" name="birth-date" required autocomplete="bday">
+        <i class='bx bxs-calendar'></i>
+      </div>
+
+      <div class="input-box">
+        <input type="email" name="email" placeholder="Email" id="email" required autocomplete="email">
         <i class='bx bxs-envelope'></i>
       </div>
 
       <div class="input-box">
-        <input type="text" name="username" placeholder="Username" id="username" required>
+        <input type="text" name="username" placeholder="Username" id="username" required autocomplete="username">
         <i class='bx bxs-user'></i>
       </div>
 
       <div class="input-box">
-        <input type="password" id="password" name="password" placeholder="Password" required oninput="checkPasswordStrength(this.value)">
+        <input type="password" id="password" name="password" placeholder="Password" required autocomplete="new-password" oninput="checkPasswordStrength(this.value)">
         <i class='bx bxs-lock-alt'></i>
       </div>
 
       <div class="input-box">
-        <input type="password" id="re-enter-password" placeholder="Re-enter Password" required oninput="validatePasswordMatch()">
+        <input type="password" id="re-enter-password" placeholder="Re-enter Password" required autocomplete="new-password" oninput="validatePasswordMatch()">
         <i class='bx bxs-lock-alt'></i>
       </div>
       <p id="password-match-message"></p>
@@ -200,7 +213,7 @@
       </div>
 
       <div class="input-box">
-        <select name="security-question" required>
+        <select name="security-question" required autocomplete="off">
           <option value="">Select a Security Question</option>
           <option value="pet-name">What is the name of your first pet?</option>
           <option value="mother-maiden">What is your mother's maiden name?</option>
@@ -210,12 +223,12 @@
       </div>
 
       <div class="input-box">
-        <input type="text" name="security-answer" placeholder="Answer to Security Question" required>
+        <input type="text" name="security-answer" placeholder="Answer to Security Question" required autocomplete="off">
         <i class='bx bxs-lock-alt'></i>
       </div>
 
-      <!-- reCAPTCHA widget -->
-      <div class="h-captcha" data-sitekey="dc88cd92-d376-4976-b77e-bd6ef170a206"></div>
+      <!-- ✅ reCAPTCHA widget -->
+      <div class="g-recaptcha" data-sitekey="dc88cd92-d376-4976-b77e-bd6ef170a206"></div>
 
       <button type="submit" id="submit-btn" class="btn">Signup</button>
 

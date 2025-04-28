@@ -12,7 +12,7 @@
     <div class="wrapper">
 
         <!-- Forgot Username Form -->
-        <form id="forgot-username" class="form-section active" action="#">
+        <form id="forgot-username" class="form-section active" action="#" method="POST">
             <h1>Forgot Username</h1>
             <div class="input-box">
                 <input type="email" name="user_email" placeholder="Enter your email" required>
@@ -26,7 +26,7 @@
         </form>
 
         <!-- Forgot Password Form -->
-        <form id="forgot-password" class="form-section" action="#">
+        <form id="forgot-password" class="form-section" action="#" method="POST">
             <h1>Forgot Password</h1>
             <div class="input-box">
                 <input type="email" name="reset_email" placeholder="Enter your email" required>
@@ -42,7 +42,7 @@
     </div>
 
     <!-- EmailJS SDK -->
-    <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
     <script>
         function switchForm(formId) {
@@ -54,48 +54,84 @@
         // Forgot Username Form Submission
         document.getElementById("forgot-username").addEventListener("submit", function(event) {
             event.preventDefault();
-
             const userEmail = this.querySelector('input[name="user_email"]').value;
 
-            const templateParams = {
-                user_email: userEmail,
-                username: "SampleUsername" // Replace with real username from database
-            };
+            const formData = new FormData(this);
+            fetch('../PHP/forgot.php', {
+                method: 'POST',
+                body:formData
+            }).then(res => res.text())
+            .then(text => {
+               console.log("Response message: ", text);
+               const data = JSON.parse(text);
+                if (data.success) {
+                    const user = data.username;
 
-            // Public Key (Username Recovery)
-            emailjs.init("j3LhRQJY8ba0UVEc9");
+                    const templateParams = {
+                        email: userEmail,
+                        username: user // Replace with real username from database
+                    };
 
-            emailjs.send("service_qk7yl6s", "template_o6y9c9d", templateParams)
-                .then(() => {
-                    alert("Username has been sent to your email!");
-                }, (error) => {
-                    alert("Failed to send username email.");
-                    console.error(error);
-                });
+                    // Public Key (Username Recovery)
+                    emailjs.init("j3LhRQJY8ba0UVEc9");
+
+                    emailjs.send("service_qk7yl6s", "template_o6y9c9d", templateParams)
+                        .then(() => {
+                            alert("Username has been sent to your email!");
+                        }, (error) => {
+                            alert("Failed to send username email.");
+                            console.error(error);
+                            });
+                }
+            }).catch(err => {
+                console.error('Error in server response: ', err);   
+            });
         });
 
         // Forgot Password
         document.getElementById("forgot-password").addEventListener("submit", function(event) {
             event.preventDefault();
-
             const resetEmail = this.querySelector('input[name="reset_email"]').value;
+            const host = window.location.host;
+            const resetLink = `<a href="http://${host}/HTML/reset.html" title="Reset password">Reset your password here</a>`;
 
+<<<<<<< HEAD
             const resetLink = `http://${host}/HTML/reset.html`;
+=======
+            const formBody = new FormData(this);
+            fetch('../PHP/forgot.php', {
+                method: "POST",
+                credentials: 'include',
+                body: formBody
+            }).then(res => res.text())
+            .then(text => {
+                console.log("Response message: ", text);
+                try {
+                    const data = JSON.parse(text);
+                    if (data.success) {
+                        const templateParams = {
+                        email: resetEmail,
+                        link: resetLink
+                    };
+>>>>>>> 578c7bd4b3caba547dd78eeb693903f9f3b3fde1
 
-            const templateParams = {
-                user_email: resetEmail,
-                reset_link: resetLink
-            };
+                    //Public Key (Password Reset)
+                    emailjs.init("m6PLiBb93HWVqEv7t");
 
-            //Public Key (Password Reset)
-            emailjs.init("m6PLiBb93HWVqEv7t");
-
-            emailjs.send("service_7tpn0mm", "template_d3zagf5", templateParams)
-                .then(() => {
-                    alert("A reset link has been sent to your email!");
-                }, (error) => {
-                    alert("Failed to send reset email.");
-                    console.error(error);
+                    emailjs.send("service_7tpn0mm", "template_d3zagf5", templateParams)
+                        .then(() => {
+                            alert("A reset link has been sent to your email!");
+                        }, (error) => {
+                            alert("Failed to send reset email.");
+                            console.error(error);
+                        });
+                            }
+                }
+                catch(error) {
+                    console.log("JSON parse error: ", error);
+                }
+            }).catch(err => {
+                console.error('Error in server response: ', err); 
                 });
         });
     </script>
