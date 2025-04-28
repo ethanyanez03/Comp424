@@ -19,7 +19,7 @@
       </div>
 
       <div class="input-box">
-        <input type="password" name="password" placeholder="Password" required />
+        <input type="password" id="password" name="password" placeholder="Password" required />
         <i class='bx bxs-lock-alt'></i>
       </div>
 
@@ -33,25 +33,32 @@
   </div>
 
   <script>
-    document.getElementById('login-form').addEventListener('submit', function () {
+    document.getElementById('login-form').addEventListener('submit', function (e) {
+      e.preventDefault(); // Important: stop form reload
+
       const formData = new FormData(this);
 
-      fetch('../PHP/login.php', {
+      fetch('../PHP/login.php', {  // <<-- FULL URL not relative path
         method: 'POST',
         body: formData
       })
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            window.location.href = "../PHP/home.php";
-          } else {
-            alert(data.message || "Login failed.");
-          }
-        })
-        .catch(err => {
-          console.error("Login request error:", err);
-          alert("Something went wrong. Try again.");
-        });
+      .then(res => {
+        if (!res.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return res.json();
+      })
+      .then(data => {
+        if (data.success) {
+          window.location.href = "home.php";  // no need for ../PHP if same server
+        } else {
+          alert(data.message || "Login failed.");
+        }
+      })
+      .catch(err => {
+        console.error("Login request error:", err);
+        alert("Something went wrong. Try again.");
+      });
     });
   </script>
 </body>
