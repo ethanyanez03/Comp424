@@ -95,9 +95,6 @@
             const host = window.location.host;
             const resetLink = `<a href="http://${host}/HTML/reset.html" title="Reset password">Reset your password here</a>`;
 
-<<<<<<< HEAD
-            const resetLink = `http://${host}/HTML/reset.html`;
-=======
             const formBody = new FormData(this);
             fetch('../PHP/forgot.php', {
                 method: "POST",
@@ -113,7 +110,6 @@
                         email: resetEmail,
                         link: resetLink
                     };
->>>>>>> 578c7bd4b3caba547dd78eeb693903f9f3b3fde1
 
                     //Public Key (Password Reset)
                     emailjs.init("m6PLiBb93HWVqEv7t");
